@@ -1,0 +1,43 @@
+services:
+  mariadb:
+    restart: always
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: ProjectOverview
+      MYSQL_USER: spring
+      MYSQL_PASSWORD: 123
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_config:/etc/mysql/conf.d
+
+  backend:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: backend
+    ports:
+      - 4200:4200
+    depends_on:
+      - mariadb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://app_db:3306/ProjectOverview
+    links:
+      - mariadb:app_db
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: frontend
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  mysql_config:
