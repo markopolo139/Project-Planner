@@ -1,6 +1,5 @@
 services:
   mariadb:
-    restart: always
     image: mariadb:latest
     environment:
       MYSQL_ROOT_PASSWORD: 123
@@ -14,7 +13,6 @@ services:
       - mysql_config:/etc/mysql/conf.d
 
   backend:
-    restart: always
     build:
       dockerfile: Dockerfile
       context: backend
